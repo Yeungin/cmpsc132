@@ -416,32 +416,34 @@ class AdvancedCalculator(Calculator):
         self.states = {} 
         calcObj = Calculator()     # method must use calcObj to compute each expression
         # YOUR CODE STARTS HERE
-        expr = self.expressions.split(";")      #making a list of each line in the expression
-        out = {}                                #the output dictionary
-        for element in expr:                    #iteratue through each line in the expression
-            lst = element.split("=")            #split the line between the variable and equation portions, or not at all if the return line
-            var = lst[0].strip()                #first element is the variable
-            eq = lst[-1].strip()                 #the last element is the equation
-            if element == expr[-1]:             #see if this is the last element
-                result = element[7:]            #remove result from the string
-                result = result.strip()         
-                if self._isVariable(result):    #check if the return is asking for only a variable
+        expr = self.expressions.split(";")
+        out = {}
+        for element in expr:
+            lst = element.split("=")
+            var = lst[0].strip()
+            eq = lst[-1].strip()
+            if element == expr[-1]:
+                result = element[7:]
+                result = result.strip()
+                if self._isVariable(result):
                     out["_return_"] = self.states[result]
                     return out
-                if self._isNumber(result):      #check if the return is asking for only a number
+                if self._isNumber(result):
                     out["_return_"] = float(result)
                     return out
-                result = self._replaceVariables(result) #the eq after replacing the variable
-                calcObj.setExpr(result)                 #calculate the eq
+
+                result = self._replaceVariables(result)
+
+                calcObj.setExpr(result)
                 out["_return_"] = calcObj.calculate
-                return out                              #return the dictionary, becacuse this is the last line
-            elif self._isVariable(var) == False:        #if a variable is not valid, exit the method
+                return out
+            elif self._isVariable(var) == False:
                 self.states = {}
                 return None
-            elif self._isNumber(eq):                    #if the eq is only a number, set it equal to the var
+            elif self._isNumber(eq):
                 self.states[var] = float(eq)
-            else:                                       #do calculations if the eq requires it
+            else:
                 eq = self._replaceVariables(eq)
                 calcObj.setExpr(eq)
                 self.states[var] = calcObj.calculate
-            out[element] = self.states.copy()                 #add the current version of self.states as the value of the dict
+            out[element] = self.states.copy()
